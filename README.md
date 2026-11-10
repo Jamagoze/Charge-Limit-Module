@@ -1,14 +1,14 @@
-# Charge Limit (Magisk module)
+# Charge Limit (Magisk / KernelSU / APatch module)
 
 Stops charging at a battery percentage you choose (1-99%, default 80) and resumes a few percent lower. Pure shell and sysfs: no Zygisk, no APK, no accessibility service.
 
-Current version: **v1.7**
+Current version: **v1.8**
 
 ## Does it only work on HyperOS?
 
 No. Nothing in it is HyperOS-specific. It needs:
 
-- Root with Magisk 20.4 or newer
+- Root with Magisk 20.4 or newer, KernelSU or APatch
 - A kernel that exposes a writable switch that turns charging off
 
 The module tries these switches in order and keeps the first one that really stops charging:
@@ -35,11 +35,17 @@ To check another device, run `su -c stopcharge nodes` and look for a file with "
 
 ## Install
 
-1. Flash `stop_charge_limit.zip` in Magisk (Modules, Install from storage).
+1. Install `stop_charge_limit.zip` from the Magisk, KernelSU or APatch app (Modules, Install from storage).
 2. Reboot.
 3. Set your limit: `su -c stopcharge 80`
 
 Updating: flash the new zip over the old one and reboot. Your settings are kept.
+
+## KernelSU / APatch
+
+Works the same as on Magisk. Newer KernelSU does not mount a module's `system/` folder unless a metamodule is installed, so the module also places a `stopcharge` wrapper in the manager's own bin folder (`/data/adb/ksu/bin` or `/data/adb/ap/bin`) at every boot. If `su -c stopcharge` says "not found", run it by full path: `su -c /data/adb/ksu/bin/stopcharge` (APatch: `/data/adb/ap/bin/stopcharge`), or `su -c sh /data/adb/modules/stopcharge/system/bin/stopcharge`.
+
+Scripts run under the manager's BusyBox, so process listing uses the system `ps` first and falls back to BusyBox.
 
 ## Commands (Termux, root)
 
@@ -98,9 +104,13 @@ HW=0
 
 ## Uninstall
 
-Remove the module in Magisk and reboot. It restores charging, releases the wakelock, clears the RTC alarm and deletes `/data/adb/stopcharge`.
+Remove the module in your root manager and reboot. It restores charging, releases the wakelock, clears the RTC alarm and deletes `/data/adb/stopcharge`.
 
 ## Version history
+
+**v1.8**
+- KernelSU and APatch support: manager-agnostic installer stub, `stopcharge` wrapper placed in the manager's bin folder, BusyBox-safe process listing, `Root` line in the status.
+- module.prop author set to Jamagoze.
 
 **v1.7**
 - Replaced the battery-event listener (never fired on HyperOS) with an awake-only timer plus an always-armed RTC alarm for deep sleep.
