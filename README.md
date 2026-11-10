@@ -110,7 +110,6 @@ Remove the module in your root manager and reboot. It restores charging, release
 
 **v1.8**
 - KernelSU and APatch support: manager-agnostic installer stub, `stopcharge` wrapper placed in the manager's bin folder, BusyBox-safe process listing, `Root` line in the status.
-- module.prop author set to Jamagoze.
 
 **v1.7**
 - Replaced the battery-event listener (never fired on HyperOS) with an awake-only timer plus an always-armed RTC alarm for deep sleep.
